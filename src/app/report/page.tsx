@@ -160,20 +160,15 @@ export default function ReportPage() {
   "closing_message": "رسالة ختامية مؤثرة تخاطبه مباشرة وتقول له ان هذه اللحظة هي نقطة التحول في حياته المالية"
 }`
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 3000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
+        body: JSON.stringify({ prompt }),
       })
 
       const json = await res.json()
-      const text = json.content?.[0]?.text || ''
-      const clean = text.replace(/```json|```/g, '').trim()
-      const parsed = JSON.parse(clean)
+      if (!res.ok) throw new Error(json.error || 'Server error')
+      const parsed = JSON.parse(json.result)
       setReport(parsed)
     } catch (e) {
       setError('حدث خطأ في توليد التقرير — يرجى المحاولة مرة أخرى')

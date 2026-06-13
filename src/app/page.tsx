@@ -94,6 +94,14 @@ export default function Home() {
       { label: '🌟 استثمار بعائد 10%', months: calcMonthsToGoal(netWorth, monthlySaving, 10, goal) },
     ]
 
+    // لو الادخار سالب — نوقف ونعطي نصيحة
+    if (monthlySaving <= 0) {
+      const negResult = { totalMonths: 99999, netWorth, monthlySaving, chartLabels: [], chartData: [], scenarios: [] }
+      setResult(negResult)
+      setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
+      return
+    }
+
     const newResult = { totalMonths, netWorth, monthlySaving, chartLabels: labels, chartData: data, scenarios }
     setResult(newResult)
     setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
@@ -362,6 +370,32 @@ export default function Home() {
         {/* Results */}
         {result && (
           <div id="results" className="space-y-4">
+
+            {/* لما الادخار سالب */}
+            {result.monthlySaving <= 0 ? (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-6 text-center">
+                <div className="text-5xl mb-4">⚠️</div>
+                <h2 className="text-xl font-extrabold text-red-400 mb-3">مصروفك أكثر من راتبك</h2>
+                <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                  للأسف لا يمكن الوصول للمليون بهذا الوضع. الخطوة الأولى هي تقليل المصاريف أو زيادة الدخل.
+                </p>
+                <div className="space-y-3 text-right mb-5">
+                  {['قلل مصاريفك ولو 200 ريال كل شهر', 'ابحث عن مصدر دخل إضافي ولو صغير', 'راجع اشتراكاتك الشهرية وألغِ غير الضروري'].map((tip, i) => (
+                    <div key={i} className="flex items-center gap-3 bg-white/5 rounded-xl p-3 text-sm">
+                      <span className="text-gold">💡</span>
+                      <span className="text-gray-300">{tip}</span>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  onClick={() => { setResult(null); setStep(1) }}
+                  className="w-full py-3 bg-gold text-white font-bold rounded-xl hover:bg-yellow-600 transition-all"
+                >
+                  أعد الحساب بأرقام مختلفة ←
+                </button>
+              </div>
+            ) : (
+              <>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
               <p className="text-gray-400 text-sm mb-2">إذا استمريت بنفس وضعك ستصل للهدف خلال</p>
               <div className="text-5xl font-extrabold text-gold leading-tight">
@@ -407,6 +441,8 @@ export default function Home() {
             >
               ← أعد الحساب بأرقام مختلفة
             </button>
+            </>
+            )}
           </div>
         )}
 

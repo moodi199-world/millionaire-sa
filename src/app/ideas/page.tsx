@@ -55,51 +55,10 @@ export default function IdeasPage() {
     setLoading(true)
     setError('')
     try {
-      const prompt = `أنت خبير ريادة أعمال سعودي. ولّد قائمة بـ 40 فكرة مشروع ناجحة ومحدّثة ومناسبة للسوق السعودي الحالي 2025-2026.
-
-الأفكار يجب أن تكون:
-- واقعية ومجربة في السوق السعودي أو الخليجي
-- متنوعة بين تقنية، تجارة، خدمات، إبداع، تعليم، طعام، عقارات
-- شاملة لكل مستويات رأس المال
-- محفّزة وتشجع على البدء
-
-أجب بـ JSON فقط بدون أي نص إضافي:
-{
-  "ideas": [
-    {
-      "id": 1,
-      "title": "اسم المشروع",
-      "category": "تقنية",
-      "capital": "بدون رأس مال",
-      "capital_color": "green",
-      "description": "وصف مشوق للفكرة يحمس القارئ ويشرح الفرصة",
-      "monthly_profit": "500 - 3000 ريال/شهر",
-      "how_to_start": "شرح واضح كيف تبدأ هذا المشروع خطوة بخطوة",
-      "first_step": "خطوة واحدة محددة تنفذها اليوم",
-      "time_to_profit": "1-3 أشهر"
-    }
-  ]
-}
-
-الفئات المتاحة: تقنية، تجارة، خدمات، إبداع، تعليم، طعام، عقارات
-رأس المال: بدون رأس مال، أقل من 5K، 5K-50K، أكثر من 50K
-capital_color: green لبدون رأس مال، yellow لأقل من 5K، orange لـ 5K-50K، red لأكثر من 50K
-
-تأكد من التنوع: 10 أفكار بدون رأس مال، 15 أقل من 5K، 10 من 5K-50K، 5 أكثر من 50K`
-
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 4000,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      })
+      const res = await fetch('/api/ideas')
       const json = await res.json()
-      const text = json.content?.[0]?.text || ''
-      const clean = text.replace(/```json|```/g, '').trim()
-      const parsed = JSON.parse(clean)
+      if (!res.ok) throw new Error(json.error || 'Server error')
+      const parsed = JSON.parse(json.result)
       setIdeas(parsed.ideas || [])
     } catch {
       setError('حدث خطأ في التوليد — حاول مرة أخرى')
