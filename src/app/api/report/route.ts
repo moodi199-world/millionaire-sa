@@ -29,12 +29,29 @@ export async function POST(req: NextRequest) {
     })
 
     const data = await res.json()
+
+    // لو في خطأ من Anthropic
+    if (data.error) {
+      return NextResponse.json({ error: data.error.message || 'Anthropic error' }, { status: 500 })
+    }
+
     const text = data.content?.[0]?.text || ''
+    if (!text) {
+      return NextResponse.json({ error: 'Empty response from API' }, { status: 500 })
+    }
+
     const clean = text.replace(/```json|```/g, '').trim()
 
+    // تحقق إن الناتج JSON صالح
+    try {
+      JSON.parse(clean)
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON response', raw: clean.substring(0, 200) }, { status: 500 })
+    }
+
     return NextResponse.json({ result: clean })
-  } catch (error) {
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+  } catch (error: any) {
+    return NextResponse.json({ error: error?.message || 'Server error' }, { status: 500 })
   }
 }
 // force redeploy Sat Jun 13 22:30:40 UTC 2026

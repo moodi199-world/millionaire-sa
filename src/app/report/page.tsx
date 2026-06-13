@@ -64,7 +64,17 @@ export default function ReportPage() {
 
   useEffect(() => {
     const d = getUserData()
-    if (!d) { router.push('/'); return }
+    if (!d) {
+      // لو البيانات ضاعت، نعطي بيانات افتراضية بسيطة
+      const defaultData = {
+        salary: 8000, expenses: 5000, savings: 0,
+        investments: 0, rate: 0, monthlySaving: 3000,
+        netWorth: 0, totalMonths: 168
+      }
+      setData(defaultData)
+      generateReport(defaultData)
+      return
+    }
     setData(d)
     generateReport(d)
   }, [router])
@@ -171,7 +181,8 @@ export default function ReportPage() {
       const parsed = JSON.parse(json.result)
       setReport(parsed)
     } catch (e) {
-      setError('حدث خطأ في تجهيز التقرير — يرجى المحاولة مرة أخرى')
+      const errMsg = e instanceof Error ? e.message : 'خطأ غير معروف'
+      setError(`حدث خطأ في تجهيز التقرير: ${errMsg}`)
     } finally {
       setLoading(false)
     }
