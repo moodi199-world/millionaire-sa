@@ -58,7 +58,7 @@ export default function UpsellCard({ scenarios, userData }: Props) {
         <div className="text-3xl font-extrabold text-gold mb-1">
           9 <span className="text-xl">ريال فقط</span>
         </div>
-        <p className="text-xs text-gray-400">تقرير مخصص + أفضل خطة للوصول للمليون</p>
+        <p className="text-xs text-gray-400">اكتشف كيف توصل أسرع وتوفر سنوات من عمرك 🚀</p>
       </div>
 
       {/* ما يشمله التقرير */}
