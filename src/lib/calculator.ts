@@ -36,8 +36,6 @@ export function targetDate(months: number): string {
 }
 
 export function formatNumber(n: number): string {
-  if (n >= 1000000) return (n / 1000000).toFixed(2) + 'م'
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'ك'
   return Math.round(n).toLocaleString('ar-SA')
 }
 
