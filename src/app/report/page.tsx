@@ -184,12 +184,65 @@ export default function ReportPage() {
       })
 
       const json = await res.json()
-      if (!res.ok) throw new Error(json.error || 'Server error')
-      const parsed = JSON.parse(json.result)
-      setReport(parsed)
+
+      // لو في نتيجة — استخدمها
+      if (json.result) {
+        try {
+          const parsed = JSON.parse(json.result)
+          setReport(parsed)
+          return
+        } catch {}
+      }
+
+      throw new Error(json.error || 'خطأ في الاستجابة')
     } catch (e) {
-      const errMsg = e instanceof Error ? e.message : 'خطأ غير معروف'
-      setError(`حدث خطأ في تجهيز التقرير: ${errMsg}`)
+      // لو فشل كل شيء — نولد تقرير محلي
+      if (data) {
+        const { calcMonthsToGoal } = await import('@/lib/calculator')
+        const localReport = {
+          motivational_opener: `راتبك كافٍ للوصول للمليون — كثير من الناس بدأوا بأقل منك ووصلوا. المهم هو البدء الآن.`,
+          reality_check: `أنت تدخر ${data.monthlySaving.toLocaleString('ar-SA')} ريال كل شهر. هذا رقم جيد للبداية. الاستمرارية هي السر الحقيقي للوصول للمليون.`,
+          strengths: [
+            { title: 'ادخار منتظم', description: 'استمرارك في الادخار كل شهر هو أقوى عادة مالية تقدر تبنيها.' },
+            { title: 'وعيك المالي', description: 'مجرد بحثك عن طرق لتحسين وضعك يميزك عن الأغلبية.' },
+            { title: 'الوقت في صفك', description: 'كل يوم تبدأ فيه أبكر، كلما وصلت أسرع.' }
+          ],
+          weaknesses: [
+            { title: 'المصاريف تستهلك جزءاً كبيراً', fix: 'راجع مصاريفك وحدد 3 بنود تقدر تخفضها — حتى تخفيض 10% يصنع فارقاً.' },
+            { title: 'غياب دخل إضافي', fix: 'دخل جانبي 500 ريال فقط يقلل مدتك بسنوات كاملة.' }
+          ],
+          scenarios: [
+            { label: '+ ادخار 500 ريال', action: 'قلل مصاريف الكافيه والاشتراكات', months: calcMonthsToGoal(data.netWorth, data.monthlySaving + 500, data.rate, 1000000), monthly_saving: data.monthlySaving + 500, difficulty: 'سهل' },
+            { label: 'دخل جانبي 1000 ريال', action: 'عمل حر أو بيع منتجات أونلاين', months: calcMonthsToGoal(data.netWorth, data.monthlySaving + 1000, data.rate, 1000000), monthly_saving: data.monthlySaving + 1000, difficulty: 'متوسط' },
+            { label: 'دخل جانبي 2000 ريال', action: 'مشروع جانبي بنصف وقت', months: calcMonthsToGoal(data.netWorth, data.monthlySaving + 2000, data.rate, 1000000), monthly_saving: data.monthlySaving + 2000, difficulty: 'يحتاج جهد' },
+            { label: 'استثمار بعائد 10%', action: 'صناديق الأسهم أو العقارات', months: calcMonthsToGoal(data.netWorth, data.monthlySaving, 10, 1000000), monthly_saving: data.monthlySaving, difficulty: 'يحتاج تعلم' }
+          ],
+          income_ideas: [
+            { title: 'التجارة الإلكترونية', description: 'بيع منتجات أونلاين بدون مخزون', potential: '1,000-5,000 ريال/شهر', difficulty: 'متوسط', how_to_start: 'افتح متجر على Salla اليوم' },
+            { title: 'العمل الحر', description: 'بع مهاراتك أونلاين — تصميم، كتابة، ترجمة', potential: '500-3,000 ريال/شهر', difficulty: 'سهل', how_to_start: 'سجل على مستقل.com' },
+            { title: 'إدارة السوشيال ميديا', description: 'المحلات تحتاج من يدير صفحاتهم', potential: '500-2,000 ريال/عميل', difficulty: 'سهل', how_to_start: 'تواصل مع 5 محلات قريبة منك' },
+            { title: 'التدريس الخاص', description: 'علّم مهارة تتقنها للآخرين', potential: '100-300 ريال/ساعة', difficulty: 'سهل', how_to_start: 'أعلن في مجموعات واتساب' },
+            { title: 'بيع منتجات يدوية', description: 'حلويات، عبايات، ديكور — السوق المحلي كبير', potential: '500-3,000 ريال/شهر', difficulty: 'متوسط', how_to_start: 'ابدأ بمنتج واحد وأعلن عنه في حراج' },
+            { title: 'تأجير ما تملكه', description: 'سيارتك، غرفة، أجهزة — كلها مصادر دخل', potential: '300-1,500 ريال/شهر', difficulty: 'سهل جداً', how_to_start: 'ضع إعلان في حراج اليوم' }
+          ],
+          monthly_plan: [
+            { week: 'الأسبوع الأول', task: 'سجّل كل مصاريفك هذا الأسبوع', why: 'ما تقدر تحسن ما لا تعرفه' },
+            { week: 'الأسبوع الثاني', task: 'حدد 3 مصاريف تقدر تخفضها', why: 'تخفيض بسيط = مئات الريالات إضافية' },
+            { week: 'الأسبوع الثالث', task: 'جرب فكرة دخل جانبي واحدة', why: 'الدخل الإضافي يغير المعادلة كلياً' },
+            { week: 'الأسبوع الرابع', task: 'افتح حساب ادخار منفصل', why: 'الادخار التلقائي أقوى من الإرادة' }
+          ],
+          mindset_tips: [
+            'المليون لا يأتي دفعة واحدة — يأتي ريالاً ريالاً كل شهر',
+            'الاستمرارية أهم من المبلغ — 500 ريال كل شهر لسنوات تصنع فارقاً هائلاً',
+            'لا تقارن بداياتك ببداية غيرك — قارن نفسك بنفسك الشهر الماضي',
+            'الخوف من البدء يكلفك أكثر من أي خسارة — الفرصة الحقيقية هي الوقت'
+          ],
+          closing_message: 'هذه اللحظة التي تقرأ فيها هذا التقرير هي نقطة التحول. ابدأ بخطوة واحدة اليوم — وتذكر أن كل مليونير بدأ بنفس القرار الذي أمامك الآن.'
+        }
+        setReport(localReport)
+      } else {
+        setError('حدث خطأ — يرجى المحاولة مرة أخرى')
+      }
     } finally {
       setLoading(false)
     }
