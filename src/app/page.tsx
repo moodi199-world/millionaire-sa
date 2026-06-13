@@ -354,10 +354,10 @@ export default function Home() {
                 </button>
               )}
               <button
-                onClick={nextStep}
-                disabled={!canGoNext()}
+                onClick={step === 4 ? calculate : nextStep}
+                disabled={step !== 4 && !canGoNext()}
                 className={`flex-1 py-3.5 font-bold text-lg rounded-xl transition-all active:scale-95 ${
-                  canGoNext()
+                  step === 4 || canGoNext()
                     ? 'bg-gold hover:bg-yellow-600 text-white'
                     : 'bg-white/10 text-gray-500 cursor-not-allowed'
                 }`}
