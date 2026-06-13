@@ -26,7 +26,7 @@ export default function ShareCard({ years, totalMonths, date, goal }: Props) {
   ]
   const motivation = motivations[totalMonths % motivations.length]
 
-  const challengeText = `🏆 تحدي المليونير!\n\nأنا بكون مليونير خلال:\n${years} (${totalMonths} شهر فقط!)\n\nوأنت؟ كم شهر عندك؟\nاحسب نتيجتك الحين 👇\nmillionaire-sa.netlify.app`
+  const challengeText = `🏆 تحدي المليونير!\n\nأنا بكون مليونير خلال:\n${years} (${totalMonths} شهر فقط!)\n\nوأنت؟ احسب متى بتصير مليونير 👇\nmillionaire-sa.netlify.app`
 
   const copyChallenge = () => {
     navigator.clipboard.writeText(challengeText)
@@ -149,7 +149,7 @@ export default function ShareCard({ years, totalMonths, date, goal }: Props) {
           marginBottom: '14px',
         }}>
           <div style={{ color: '#F5C842', fontSize: '15px', fontWeight: 900, marginBottom: '3px' }}>
-            وأنت؟ كم شهر عندك؟ 🤔
+            وأنت؟ احسب متى بتصير مليونير 👇
           </div>
           <div style={{ color: '#6B7280', fontSize: '11px' }}>
             تحدّ أصدقائك — من يصير مليونير أول؟
