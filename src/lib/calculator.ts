@@ -23,9 +23,10 @@ export function monthsToLabel(months: number): string {
   if (months >= 99999) return 'لن تصل بهذا الوضع'
   const years = Math.floor(months / 12)
   const remainingMonths = months % 12
-  if (years === 0) return `${remainingMonths} شهر`
+  const monthsWord = remainingMonths === 1 ? 'شهر' : remainingMonths === 2 ? 'شهرين' : remainingMonths <= 10 ? `${remainingMonths} أشهر` : `${remainingMonths} شهراً`
+  if (years === 0) return monthsWord
   if (remainingMonths === 0) return `${years} سنة`
-  return `${years} سنة و${remainingMonths} شهر`
+  return `${years} سنة و${monthsWord}`
 }
 
 export function targetDate(months: number): string {
