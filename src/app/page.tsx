@@ -12,6 +12,7 @@ import GrowthChart from '@/components/GrowthChart'
 import ShareCard from '@/components/ShareCard'
 import UpsellCard from '@/components/UpsellCard'
 import Footer from '@/components/Footer'
+import { UserData } from '@/lib/store'
 
 interface Result {
   totalMonths: number
@@ -380,7 +381,7 @@ export default function Home() {
               goal="مليون ريال"
             />
 
-            <UpsellCard scenarios={result.scenarios} />
+            <UpsellCard scenarios={result.scenarios} userData={{ salary: Number(salary), expenses: Number(expenses), savings: Number(savings), investments: Number(investments), rate, monthlySaving: result.monthlySaving, netWorth: result.netWorth, totalMonths: result.totalMonths }} />
 
             <button
               onClick={() => { setResult(null); setStep(1) }}
