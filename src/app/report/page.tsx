@@ -173,7 +173,14 @@ export default function ReportPage() {
       const res = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt,
+          salary: d.salary,
+          expenses: d.expenses,
+          monthlySaving: d.monthlySaving,
+          totalMonths: d.totalMonths,
+          netWorth: d.netWorth,
+        }),
       })
 
       const json = await res.json()
