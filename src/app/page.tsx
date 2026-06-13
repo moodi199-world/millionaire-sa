@@ -133,15 +133,22 @@ export default function Home() {
       <div className="max-w-xl mx-auto px-4 py-8">
 
         {/* Social Proof */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <div className="flex -space-x-2">
-            {['👨','👩','👨🏻','👩🏻','👨🏽'].map((e, i) => (
-              <span key={i} className="text-lg">{e}</span>
-            ))}
+        <div className="flex flex-col items-center gap-2 mb-6">
+          <div className="flex items-center gap-2">
+            <div className="flex -space-x-2">
+              {['👨','👩','👨🏻','👩🏻','👨🏽'].map((e, i) => (
+                <span key={i} className="text-lg">{e}</span>
+              ))}
+            </div>
+            <span className="text-sm text-gray-400">
+              <span className="text-gold font-bold">{usersCount.toLocaleString('ar-SA')}</span> شخص قبلوا التحدي
+            </span>
           </div>
-          <span className="text-sm text-gray-400">
-            <span className="text-gold font-bold">{usersCount.toLocaleString('ar-SA')}</span> شخص استخدموا الحاسبة
-          </span>
+          <div className="flex gap-3 text-xs text-gray-500">
+            <span>⚡ أسرع نتيجة: <span className="text-green-400 font-bold">6 سنوات</span></span>
+            <span>·</span>
+            <span>📊 المتوسط: <span className="text-gold font-bold">14 سنة</span></span>
+          </div>
         </div>
 
         {/* Hero */}
@@ -398,13 +405,20 @@ export default function Home() {
             ) : (
               <>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
-              <p className="text-gray-400 text-sm mb-2">إذا استمريت بنفس وضعك ستصل للهدف خلال</p>
+              <div className="inline-block bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold px-3 py-1 rounded-full mb-3">
+                🔥 نتيجة تحدي المليون
+              </div>
+              <p className="text-gray-400 text-sm mb-2">ستصل لأول مليون ريال خلال</p>
               <div className="text-5xl font-extrabold text-gold leading-tight">
                 {monthsToLabel(result.totalMonths)}
               </div>
               {result.totalMonths < 99999 && (
                 <div className="text-lg font-bold mt-3">📅 {targetDate(result.totalMonths)}</div>
               )}
+              <div className="mt-4 bg-gold/10 border border-gold/20 rounded-xl p-3">
+                <p className="text-sm text-gold font-bold">تحدّ أصدقائك — من يصل أسرع؟ 🏆</p>
+                <p className="text-xs text-gray-500 mt-1">شارك نتيجتك وشوف ردودهم</p>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
