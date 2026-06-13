@@ -23,7 +23,7 @@ function LoadingReport() {
     '🔍 نحلل وضعك المالي بعمق...',
     '💡 نبحث عن أفضل الفرص لك...',
     '🎯 نبني خطتك الشخصية...',
-    '✨ يتولد تقريرك الآن...',
+    '✨ يتم تجهيز تقريرك...',
   ]
   useEffect(() => {
     const t = setInterval(() => setStep(s => Math.min(s + 1, steps.length - 1)), 1800)
@@ -32,7 +32,7 @@ function LoadingReport() {
   return (
     <div className="text-center py-16 px-4">
       <div className="text-6xl mb-6 animate-bounce">🤖</div>
-      <h2 className="text-xl font-bold mb-2">الذكاء الاصطناعي يحلل وضعك</h2>
+      <h2 className="text-xl font-bold mb-2">يتم تحليل وضعك المالي</h2>
       <p className="text-gray-400 text-sm mb-6">هذا يأخذ ثوانٍ قليلة...</p>
       <p className="text-gold font-bold text-lg mb-8 min-h-[28px]">{steps[step]}</p>
       <div className="w-full bg-white/10 rounded-full h-2 max-w-xs mx-auto">
@@ -171,7 +171,7 @@ export default function ReportPage() {
       const parsed = JSON.parse(json.result)
       setReport(parsed)
     } catch (e) {
-      setError('حدث خطأ في توليد التقرير — يرجى المحاولة مرة أخرى')
+      setError('حدث خطأ في تجهيز التقرير — يرجى المحاولة مرة أخرى')
     } finally {
       setLoading(false)
     }

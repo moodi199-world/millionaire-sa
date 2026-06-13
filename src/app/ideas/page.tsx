@@ -28,8 +28,8 @@ function LoadingIdeas() {
   return (
     <div className="text-center py-16">
       <div className="text-6xl mb-6 animate-pulse">💡</div>
-      <h2 className="text-xl font-bold mb-2">الذكاء الاصطناعي يولّد أفكار المشاريع</h2>
-      <p className="text-gray-400 text-sm mb-8">يبحث في أحدث الأسواق والفرص...</p>
+      <h2 className="text-xl font-bold mb-2">يتم تجهيز أفكار المشاريع</h2>
+      <p className="text-gray-400 text-sm mb-8">نبحث في أحدث الأسواق والفرص...</p>
       <div className="text-5xl font-extrabold text-gold mb-2">{count}</div>
       <p className="text-gray-400 text-sm mb-6">فكرة مشروع تم توليدها</p>
       <div className="w-full bg-white/10 rounded-full h-3 max-w-xs mx-auto">
