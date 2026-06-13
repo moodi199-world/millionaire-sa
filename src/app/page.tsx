@@ -26,25 +26,29 @@ export default function Home() {
   const [expenses, setExpenses] = useState('')
   const [hasSavings, setHasSavings] = useState<null | boolean>(null)
   const [savings, setSavings] = useState('')
+  const [hasInvestments, setHasInvestments] = useState<null | boolean>(null)
+  const [investments, setInvestments] = useState('')
+  const [rate, setRate] = useState<number>(7)
   const [result, setResult] = useState<Result | null>(null)
 
   const calculate = () => {
     const s = Number(salary) || 0
     const e = Number(expenses) || 0
     const sv = hasSavings ? (Number(savings) || 0) : 0
-    const rate = 7
+    const inv = hasInvestments ? (Number(investments) || 0) : 0
+    const r = hasInvestments ? rate : 0
     const goal = 1000000
-    const netWorth = sv
+    const netWorth = sv + inv
     const monthlySaving = s - e
 
-    const totalMonths = calcMonthsToGoal(netWorth, monthlySaving, rate, goal)
-    const { labels, data } = buildChartData(netWorth, monthlySaving, rate, totalMonths)
+    const totalMonths = calcMonthsToGoal(netWorth, monthlySaving, r, goal)
+    const { labels, data } = buildChartData(netWorth, monthlySaving, r, totalMonths)
 
     const scenarios = [
       { label: 'وضعك الحالي', months: totalMonths },
-      { label: '+ ادخار 500 ريال/شهر', months: calcMonthsToGoal(netWorth, monthlySaving + 500, rate, goal) },
-      { label: '+ ادخار 1000 ريال/شهر', months: calcMonthsToGoal(netWorth, monthlySaving + 1000, rate, goal) },
-      { label: '+ دخل إضافي 2000 ريال', months: calcMonthsToGoal(netWorth, monthlySaving + 2000, rate, goal) },
+      { label: '+ ادخار 500 ريال/شهر', months: calcMonthsToGoal(netWorth, monthlySaving + 500, r, goal) },
+      { label: '+ ادخار 1000 ريال/شهر', months: calcMonthsToGoal(netWorth, monthlySaving + 1000, r, goal) },
+      { label: '+ دخل إضافي 2000 ريال', months: calcMonthsToGoal(netWorth, monthlySaving + 2000, r, goal) },
       { label: '🌟 استثمار بعائد 10%', months: calcMonthsToGoal(netWorth, monthlySaving, 10, goal) },
     ]
 
@@ -52,7 +56,19 @@ export default function Home() {
     setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
   }
 
-  const isReady = salary && expenses && hasSavings !== null && (hasSavings === false || savings)
+  const isReady =
+    salary &&
+    expenses &&
+    hasSavings !== null &&
+    (hasSavings === false || savings) &&
+    hasInvestments !== null &&
+    (hasInvestments === false || investments)
+
+  const rateOptions = [
+    { label: 'محافظ', sub: 'ودائع وصكوك', value: 4 },
+    { label: 'متوسط', sub: 'صناديق استثمار', value: 7 },
+    { label: 'جريء', sub: 'أسهم وعقارات', value: 12 },
+  ]
 
   return (
     <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
@@ -64,18 +80,16 @@ export default function Home() {
             متى تصبح <span className="text-gold">مليونير</span>؟
           </h1>
           <p className="text-gray-400 text-base">
-            3 أسئلة بس — واعرف متى ستصل لأول مليون ريال 🎯
+            أجب على الأسئلة واعرف متى ستصل لأول مليون ريال 🎯
           </p>
         </div>
 
         {/* Form */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6 space-y-6">
 
-          {/* Q1 */}
+          {/* Q1 - الراتب */}
           <div>
-            <label className="block text-base font-bold mb-2">
-              💰 كم راتبك الشهري؟
-            </label>
+            <label className="block text-base font-bold mb-2">💰 كم راتبك الشهري؟</label>
             <div className="relative">
               <input
                 type="number"
@@ -84,15 +98,13 @@ export default function Home() {
                 placeholder="مثال: 8000"
                 className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-gold transition-colors"
               />
-              <span className="absolute left-4 top-3.5 text-gray-400">ريال</span>
+              <span className="absolute left-4 top-3.5 text-gray-400 text-sm">ريال</span>
             </div>
           </div>
 
-          {/* Q2 */}
+          {/* Q2 - المصروف */}
           <div>
-            <label className="block text-base font-bold mb-2">
-              🛒 كم مصروفك الشهري؟
-            </label>
+            <label className="block text-base font-bold mb-2">🛒 كم مصروفك الشهري؟</label>
             <div className="relative">
               <input
                 type="number"
@@ -101,7 +113,7 @@ export default function Home() {
                 placeholder="مثال: 5000"
                 className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-gold transition-colors"
               />
-              <span className="absolute left-4 top-3.5 text-gray-400">ريال</span>
+              <span className="absolute left-4 top-3.5 text-gray-400 text-sm">ريال</span>
             </div>
             {salary && expenses && Number(salary) > Number(expenses) && (
               <p className="text-green-400 text-sm mt-2">
@@ -115,18 +127,14 @@ export default function Home() {
             )}
           </div>
 
-          {/* Q3 */}
+          {/* Q3 - المدخرات */}
           <div>
-            <label className="block text-base font-bold mb-3">
-              🏦 عندك مدخرات حالية؟
-            </label>
+            <label className="block text-base font-bold mb-3">🏦 عندك مدخرات حالية؟</label>
             <div className="flex gap-3 mb-3">
               <button
                 onClick={() => setHasSavings(true)}
                 className={`flex-1 py-3 rounded-xl font-bold text-base transition-all ${
-                  hasSavings === true
-                    ? 'bg-gold text-white'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  hasSavings === true ? 'bg-gold text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
                 }`}
               >
                 نعم ✅
@@ -134,9 +142,7 @@ export default function Home() {
               <button
                 onClick={() => { setHasSavings(false); setSavings('') }}
                 className={`flex-1 py-3 rounded-xl font-bold text-base transition-all ${
-                  hasSavings === false
-                    ? 'bg-gold text-white'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                  hasSavings === false ? 'bg-gold text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
                 }`}
               >
                 لا ❌
@@ -152,7 +158,66 @@ export default function Home() {
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-gold transition-colors"
                   autoFocus
                 />
-                <span className="absolute left-4 top-3.5 text-gray-400">ريال</span>
+                <span className="absolute left-4 top-3.5 text-gray-400 text-sm">ريال</span>
+              </div>
+            )}
+          </div>
+
+          {/* Q4 - الاستثمارات */}
+          <div>
+            <label className="block text-base font-bold mb-3">📈 عندك استثمارات حالية؟</label>
+            <div className="flex gap-3 mb-3">
+              <button
+                onClick={() => setHasInvestments(true)}
+                className={`flex-1 py-3 rounded-xl font-bold text-base transition-all ${
+                  hasInvestments === true ? 'bg-gold text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                }`}
+              >
+                نعم ✅
+              </button>
+              <button
+                onClick={() => { setHasInvestments(false); setInvestments('') }}
+                className={`flex-1 py-3 rounded-xl font-bold text-base transition-all ${
+                  hasInvestments === false ? 'bg-gold text-white' : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                }`}
+              >
+                لا ❌
+              </button>
+            </div>
+            {hasInvestments === true && (
+              <div className="space-y-3">
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={investments}
+                    onChange={e => setInvestments(e.target.value)}
+                    placeholder="كم قيمة استثماراتك؟ مثال: 50000"
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-gold transition-colors"
+                    autoFocus
+                  />
+                  <span className="absolute left-4 top-3.5 text-gray-400 text-sm">ريال</span>
+                </div>
+                {/* نسبة العائد */}
+                <div>
+                  <p className="text-sm text-gray-400 mb-2">ما نوع استثمارك؟</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {rateOptions.map((opt) => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setRate(opt.value)}
+                        className={`py-2.5 px-2 rounded-xl text-center transition-all border ${
+                          rate === opt.value
+                            ? 'border-gold bg-gold/20 text-gold'
+                            : 'border-white/10 bg-white/5 text-gray-300 hover:bg-white/10'
+                        }`}
+                      >
+                        <div className="font-bold text-sm">{opt.label}</div>
+                        <div className="text-xs text-gray-400 mt-0.5">{opt.sub}</div>
+                        <div className="text-xs font-bold mt-1 text-gold">{opt.value}%</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
             )}
           </div>
