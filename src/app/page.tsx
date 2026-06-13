@@ -440,9 +440,8 @@ export default function Home() {
 
             <ShareCard
               years={monthsToLabel(result.totalMonths)}
+              totalMonths={result.totalMonths}
               date={targetDate(result.totalMonths)}
-              netWorth={formatNumber(result.netWorth)}
-              saving={formatNumber(result.monthlySaving)}
               goal="مليون ريال"
             />
 

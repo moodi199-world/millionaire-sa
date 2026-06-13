@@ -4,18 +4,29 @@ import { useRef, useState } from 'react'
 
 interface Props {
   years: string
+  totalMonths: number
   date: string
-  netWorth: string
-  saving: string
   goal: string
 }
 
-export default function ShareCard({ years, date, netWorth, saving, goal }: Props) {
+export default function ShareCard({ years, totalMonths, date, goal }: Props) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [copied, setCopied] = useState(false)
   const [downloading, setDownloading] = useState(false)
 
-  const challengeText = `🏆 تحدي المليون!\n\nأنا سأصل للمليون خلال:\n${years}\n\nوأنت؟ كم سنة عندك؟\nاحسب نتيجتك: millionaire-sa.netlify.app\n\n#تحدي_المليون #كم_سنة_عندك`
+  const days = totalMonths * 30
+  const weeks = Math.round(totalMonths * 4.3)
+
+  // عبارات تحفيزية عشوائية
+  const motivations = [
+    `🔥 ${totalMonths} شهر فقط تفصلك عن المليون الأول!`,
+    `⚡ ${days.toLocaleString('ar-SA')} يوم وتصير مليونير!`,
+    `🚀 ${weeks.toLocaleString('ar-SA')} أسبوع وتغير حياتك!`,
+    `💎 المليون الأول في ${years} — هل تقبل التحدي؟`,
+  ]
+  const motivation = motivations[totalMonths % motivations.length]
+
+  const challengeText = `🏆 تحدي المليونير!\n\nأنا سأصير مليونير خلال:\n${years} (${totalMonths} شهر فقط!)\n\nوأنت؟ كم شهر عندك؟\nاحسب نتيجتك الحين 👇\nmillionaire-sa.netlify.app\n\n#تحدي_المليون #كم_سنة_عندك #متى_تصير_مليونير`
 
   const copyChallenge = () => {
     navigator.clipboard.writeText(challengeText)
@@ -70,8 +81,8 @@ export default function ShareCard({ years, date, netWorth, saving, goal }: Props
         }}
       >
         {/* خلفية زخرفية */}
-        <div style={{ position: 'absolute', fontSize: '120px', opacity: 0.04, top: '-20px', right: '-10px', lineHeight: 1 }}>💰</div>
-        <div style={{ position: 'absolute', fontSize: '120px', opacity: 0.04, bottom: '-20px', left: '-10px', lineHeight: 1 }}>🏆</div>
+        <div style={{ position: 'absolute', fontSize: '140px', opacity: 0.04, top: '-20px', right: '-15px', lineHeight: 1 }}>💰</div>
+        <div style={{ position: 'absolute', fontSize: '140px', opacity: 0.04, bottom: '-20px', left: '-15px', lineHeight: 1 }}>🏆</div>
 
         {/* شعار التحدي */}
         <div style={{
@@ -79,70 +90,83 @@ export default function ShareCard({ years, date, netWorth, saving, goal }: Props
           background: '#D4A017',
           color: '#0A0F1C',
           fontSize: '11px',
-          fontWeight: 800,
-          padding: '4px 14px',
+          fontWeight: 900,
+          padding: '5px 16px',
           borderRadius: '20px',
           marginBottom: '16px',
           letterSpacing: '1px',
         }}>
-          🔥 تحدي المليون
+          🔥 تحدي المليونير
         </div>
 
-        {/* النتيجة */}
-        <div style={{ color: '#9CA3AF', fontSize: '13px', marginBottom: '8px' }}>
-          أنا سأصل للمليون خلال
+        {/* العبارة التحفيزية */}
+        <div style={{
+          color: '#F5C842',
+          fontSize: '13px',
+          fontWeight: 700,
+          marginBottom: '12px',
+          padding: '0 8px',
+        }}>
+          {motivation}
         </div>
 
-        {/* خط فاصل علوي */}
-        <div style={{ height: '1px', background: 'rgba(212,160,23,0.3)', margin: '0 20px 16px' }} />
+        {/* خط فاصل */}
+        <div style={{ height: '1px', background: 'rgba(212,160,23,0.3)', margin: '0 16px 16px' }} />
 
-        <div style={{ color: '#D4A017', fontSize: '42px', fontWeight: 900, lineHeight: 1.1, marginBottom: '8px' }}>
+        {/* النتيجة الرئيسية */}
+        <div style={{ color: '#9CA3AF', fontSize: '12px', marginBottom: '6px' }}>
+          أنا سأصير مليونير خلال
+        </div>
+        <div style={{ color: '#D4A017', fontSize: '44px', fontWeight: 900, lineHeight: 1.1, marginBottom: '4px' }}>
           {years}
         </div>
 
-        {date && (
-          <div style={{ color: '#ffffff', fontSize: '14px', fontWeight: 700, marginBottom: '16px' }}>
-            📅 {date}
+        {/* الأرقام التحفيزية */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', margin: '14px 0' }}>
+          <div style={{ textAlign: 'center', background: 'rgba(212,160,23,0.1)', border: '1px solid rgba(212,160,23,0.2)', borderRadius: '10px', padding: '8px 14px' }}>
+            <div style={{ color: '#D4A017', fontSize: '20px', fontWeight: 900 }}>{totalMonths}</div>
+            <div style={{ color: '#6B7280', fontSize: '10px' }}>شهر</div>
           </div>
-        )}
+          <div style={{ textAlign: 'center', background: 'rgba(212,160,23,0.1)', border: '1px solid rgba(212,160,23,0.2)', borderRadius: '10px', padding: '8px 14px' }}>
+            <div style={{ color: '#D4A017', fontSize: '20px', fontWeight: 900 }}>{days.toLocaleString('ar-SA')}</div>
+            <div style={{ color: '#6B7280', fontSize: '10px' }}>يوم</div>
+          </div>
+          <div style={{ textAlign: 'center', background: 'rgba(212,160,23,0.1)', border: '1px solid rgba(212,160,23,0.2)', borderRadius: '10px', padding: '8px 14px' }}>
+            <div style={{ color: '#D4A017', fontSize: '20px', fontWeight: 900 }}>{weeks.toLocaleString('ar-SA')}</div>
+            <div style={{ color: '#6B7280', fontSize: '10px' }}>أسبوع</div>
+          </div>
+        </div>
 
-        {/* خط فاصل سفلي */}
-        <div style={{ height: '1px', background: 'rgba(212,160,23,0.3)', margin: '0 20px 16px' }} />
+        {/* خط فاصل */}
+        <div style={{ height: '1px', background: 'rgba(212,160,23,0.3)', margin: '0 16px 14px' }} />
 
         {/* التحدي */}
         <div style={{
-          background: 'rgba(212,160,23,0.1)',
-          border: '1px solid rgba(212,160,23,0.3)',
+          background: 'rgba(212,160,23,0.08)',
+          border: '1px solid rgba(212,160,23,0.25)',
           borderRadius: '12px',
-          padding: '12px',
-          marginBottom: '16px',
+          padding: '10px 14px',
+          marginBottom: '14px',
         }}>
-          <div style={{ color: '#D4A017', fontSize: '16px', fontWeight: 800, marginBottom: '4px' }}>
-            وأنت؟ كم سنة عندك؟ 🤔
+          <div style={{ color: '#F5C842', fontSize: '15px', fontWeight: 900, marginBottom: '3px' }}>
+            وأنت؟ كم شهر عندك؟ 🤔
           </div>
-          <div style={{ color: '#6B7280', fontSize: '12px' }}>
-            تحدّ أصدقائك واكتشف من الأقرب للمليون
+          <div style={{ color: '#6B7280', fontSize: '11px' }}>
+            تحدّ أصدقائك — من يصير مليونير أول؟
           </div>
         </div>
 
-        {/* معلومات إضافية */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', marginBottom: '16px' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ color: '#6B7280', fontSize: '10px' }}>ثروتي الحالية</div>
-            <div style={{ color: '#ffffff', fontSize: '12px', fontWeight: 700 }}>{netWorth} ريال</div>
+        {date && (
+          <div style={{ color: '#9CA3AF', fontSize: '11px', marginBottom: '10px' }}>
+            📅 التاريخ المتوقع: {date}
           </div>
-          <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)' }} />
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ color: '#6B7280', fontSize: '10px' }}>أدخر شهرياً</div>
-            <div style={{ color: '#ffffff', fontSize: '12px', fontWeight: 700 }}>{saving} ريال</div>
-          </div>
-        </div>
+        )}
 
         {/* الرابط */}
         <div style={{
           background: 'rgba(212,160,23,0.15)',
           borderRadius: '8px',
-          padding: '6px 12px',
+          padding: '6px 14px',
           display: 'inline-block',
         }}>
           <span style={{ color: '#D4A017', fontSize: '11px', fontWeight: 700 }}>
@@ -151,15 +175,15 @@ export default function ShareCard({ years, date, netWorth, saving, goal }: Props
         </div>
 
         {/* الهاشتاق */}
-        <div style={{ color: '#4B5563', fontSize: '11px', marginTop: '10px' }}>
-          #تحدي_المليون #كم_سنة_عندك
+        <div style={{ color: '#374151', fontSize: '10px', marginTop: '10px' }}>
+          #تحدي_المليون · #كم_سنة_عندك · #متى_تصير_مليونير
         </div>
       </div>
 
-      {/* عنوان التحدي */}
+      {/* عنوان */}
       <div className="text-center">
-        <p className="text-sm font-bold text-white mb-1">🔥 تحدّ أصدقائك!</p>
-        <p className="text-xs text-gray-400">شارك نتيجتك وشوف من الأقرب للمليون</p>
+        <p className="text-sm font-bold text-white mb-1">🔥 تحدّ أصدقائك الحين!</p>
+        <p className="text-xs text-gray-400">شارك نتيجتك — من يصير مليونير أول؟</p>
       </div>
 
       {/* أزرار المشاركة */}
@@ -191,9 +215,8 @@ export default function ShareCard({ years, date, netWorth, saving, goal }: Props
         </button>
       </div>
 
-      {/* هاشتاق */}
       <div className="text-center">
-        <span className="text-xs text-gray-600">#تحدي_المليون · #كم_سنة_عندك</span>
+        <span className="text-xs text-gray-600">#تحدي_المليون · #كم_سنة_عندك · #متى_تصير_مليونير</span>
       </div>
 
     </div>
