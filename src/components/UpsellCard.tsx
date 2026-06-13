@@ -84,6 +84,16 @@ export default function UpsellCard({ scenarios, userData }: Props) {
       <p className="mt-3 text-xs text-gray-500">
         💳 دفع آمن · استرداد خلال 24 ساعة لو ما عجبك
       </p>
+
+      <div className="mt-5 pt-5 border-t border-white/10 text-center">
+        <p className="text-xs text-gray-500 mb-2">تبي متابعة شهرية لثروتك؟</p>
+        <button
+          onClick={() => router.push('/subscribe')}
+          className="text-gold text-sm font-bold hover:underline"
+        >
+          🤖 اشترك في مساعد الثروة الشخصي — 29 ريال/شهر ←
+        </button>
+      </div>
     </div>
   )
 }

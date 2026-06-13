@@ -12,6 +12,9 @@ import GrowthChart from '@/components/GrowthChart'
 import ShareCard from '@/components/ShareCard'
 import UpsellCard from '@/components/UpsellCard'
 import Footer from '@/components/Footer'
+import EmailGate from '@/components/EmailGate'
+import ReferralCard from '@/components/ReferralCard'
+import { saveReferral, getReferralFromURL } from '@/lib/store'
 import { UserData } from '@/lib/store'
 
 interface Result {
@@ -48,15 +51,27 @@ export default function Home() {
   const [investments, setInvestments] = useState('')
   const [rate, setRate] = useState<number>(7)
   const [result, setResult] = useState<Result | null>(null)
+  const [pendingResult, setPendingResult] = useState<Result | null>(null)
+  const [emailSubmitted, setEmailSubmitted] = useState(false)
   const [usersCount, setUsersCount] = useState(1247)
 
-  // عداد مستخدمين حي وهمي لكن واقعي
   useEffect(() => {
     const interval = setInterval(() => {
       setUsersCount(prev => prev + Math.floor(Math.random() * 3))
     }, 8000)
+    const ref = getReferralFromURL()
+    if (ref) saveReferral(ref)
     return () => clearInterval(interval)
   }, [])
+
+  const handleEmailSubmit = (email: string) => {
+    setEmailSubmitted(true)
+    if (pendingResult) {
+      setResult(pendingResult)
+      setPendingResult(null)
+      setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
+    }
+  }
 
   const calculate = () => {
     const s = Number(salary) || 0
@@ -79,8 +94,14 @@ export default function Home() {
       { label: '🌟 استثمار بعائد 10%', months: calcMonthsToGoal(netWorth, monthlySaving, 10, goal) },
     ]
 
-    setResult({ totalMonths, netWorth, monthlySaving, chartLabels: labels, chartData: data, scenarios })
-    setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
+    const newResult = { totalMonths, netWorth, monthlySaving, chartLabels: labels, chartData: data, scenarios }
+    if (emailSubmitted) {
+      setResult(newResult)
+      setTimeout(() => document.getElementById('results')?.scrollIntoView({ behavior: 'smooth' }), 100)
+    } else {
+      setPendingResult(newResult)
+      setTimeout(() => document.getElementById('email-gate')?.scrollIntoView({ behavior: 'smooth' }), 100)
+    }
   }
 
   const canGoNext = () => {
@@ -343,6 +364,16 @@ export default function Home() {
           </div>
         )}
 
+        {/* Email Gate */}
+        {pendingResult && !result && (
+          <div id="email-gate">
+            <EmailGate
+              onSubmit={handleEmailSubmit}
+              previewYears={monthsToLabel(pendingResult.totalMonths)}
+            />
+          </div>
+        )}
+
         {/* Results */}
         {result && (
           <div id="results" className="space-y-4">
@@ -382,6 +413,8 @@ export default function Home() {
             />
 
             <UpsellCard scenarios={result.scenarios} userData={{ salary: Number(salary), expenses: Number(expenses), savings: Number(savings), investments: Number(investments), rate, monthlySaving: result.monthlySaving, netWorth: result.netWorth, totalMonths: result.totalMonths }} />
+
+            <ReferralCard />
 
             <button
               onClick={() => { setResult(null); setStep(1) }}
