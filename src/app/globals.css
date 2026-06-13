@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  direction: rtl;
+  font-family: 'Tajawal', sans-serif;
+  background-color: #0A0F1C;
+  color: #ffffff;
+}
+
+:root {
+  --gold: #D4A017;
+  --gold-light: #F5C842;
+  --gold-pale: #FDF6DC;
+}
