@@ -117,7 +117,7 @@ export default function IdeasPage() {
               {[
                 { label: 'إجمالي الأفكار', value: ideas.length },
                 { label: 'بدون رأس مال', value: ideas.filter(i => i.capital === 'بدون رأس مال').length },
-                { label: 'فئات مختلفة', value: [...new Set(ideas.map(i => i.category))].length },
+                { label: 'فئات مختلفة', value: Array.from(new Set(ideas.map(i => i.category))).length },
               ].map((stat, i) => (
                 <div key={i} className="bg-white/5 rounded-xl p-3 text-center">
                   <div className="text-2xl font-extrabold text-gold">{stat.value}</div>
