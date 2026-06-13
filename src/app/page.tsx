@@ -154,7 +154,7 @@ export default function Home() {
                   type="number"
                   value={savings}
                   onChange={e => setSavings(e.target.value)}
-                  placeholder=""
+                  placeholder="أكتب قيمة مدخراتك"
                   className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-gold transition-colors"
                   autoFocus
                 />
@@ -191,7 +191,7 @@ export default function Home() {
                     type="number"
                     value={investments}
                     onChange={e => setInvestments(e.target.value)}
-                    placeholder=""
+                    placeholder="أكتب قيمة استثماراتك"
                     className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-gold transition-colors"
                     autoFocus
                   />
