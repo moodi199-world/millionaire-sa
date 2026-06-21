@@ -14,6 +14,15 @@ interface Idea {
   how_to_start: string
   first_step: string
   time_to_profit: string
+  day1_steps?: string[]
+  day2_steps?: string[]
+  week1_plan?: string[]
+  required_skills?: string[]
+  tools_needed?: string[]
+  common_mistakes?: string[]
+  books?: { title: string; author: string }[]
+  youtube_channels?: string[]
+  success_tip?: string
 }
 
 const CATEGORIES = ['الكل', 'تقنية', 'تجارة', 'خدمات', 'إبداع', 'تعليم', 'طعام', 'عقارات']
