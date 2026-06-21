@@ -19,7 +19,7 @@ export default function UpsellCard({ scenarios, userData }: Props) {
 
   const handleBuy = () => {
     saveUserData(userData)
-    router.push('/checkout')
+    window.open('https://saudimillion.gumroad.com/l/million-report', '_blank')
   }
 
   return (
