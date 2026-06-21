@@ -14,7 +14,7 @@ export default function ReferralCard() {
 
   if (!code) return null
 
-  const referralLink = `https://millionaire-sa.netlify.app?ref=${code}`
+  const referralLink = `https://www.saudimillion.com?ref=${code}`
 
   const copyLink = () => {
     navigator.clipboard.writeText(referralLink)
