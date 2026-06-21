@@ -26,8 +26,10 @@ export default function CheckoutPage() {
     setLoading(true)
     saveEmail(email)
     if (data) saveUserData(data)
-    // نفتح رابط الدفع الحقيقي على Gumroad
-    window.location.href = 'https://saudimillion.gumroad.com/l/million-report'
+    // مؤقتاً — التقرير مجاني لحين تفعيل بوابة دفع سعودية
+    setTimeout(() => {
+      router.push('/report')
+    }, 1000)
   }
 
   if (!data) return null
