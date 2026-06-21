@@ -81,12 +81,12 @@ export default function ReportPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: buildPrompt(d),
           salary: d.salary,
           expenses: d.expenses,
           monthlySaving: d.monthlySaving,
           totalMonths: d.totalMonths,
           netWorth: d.netWorth,
+          rate: d.rate,
         }),
       })
       const json = await res.json()
@@ -102,16 +102,6 @@ export default function ReportPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const buildPrompt = (d: UserData) => {
-    const savingRate = d.salary > 0 ? Math.round((d.monthlySaving / d.salary) * 100) : 0
-    return `أنت مستشار مالي سعودي صادق ومحفّز. اكتب تقريراً مالياً شخصياً بأسلوب "أخ ناصح" وليس "مستشار رسمي".
-
-البيانات: راتب ${d.salary} ريال | مصروف ${d.expenses} ريال | ادخار ${d.monthlySaving} ريال/شهر (${savingRate}%) | ثروة حالية ${d.netWorth} ريال | المدة للمليون: ${monthsToLabel(d.totalMonths)}
-
-أجب بـ JSON فقط بدون backticks:
-{"motivational_opener":"جملة واحدة تحفيزية شخصية تخاطبه مباشرة بناءً على أرقامه الحقيقية","reality_check":"فقرة قصيرة صادقة عن وضعه — بأسلوب شخص يحبك وخبره لك","strengths":[{"title":"نقطة قوة حقيقية من أرقامه","description":"شرح عملي كيف يستثمرها"},{"title":"نقطة قوة ثانية","description":"شرح"},{"title":"نقطة قوة ثالثة","description":"شرح"}],"weaknesses":[{"title":"نقطة ضعف بلطف","fix":"حل عملي خطوة واحدة"},{"title":"نقطة ضعف ثانية","fix":"حل"}],"scenarios":[{"label":"وضعك الحالي","action":"استمر على نفس الوتيرة","months":${d.totalMonths},"monthly_saving":${d.monthlySaving},"difficulty":"الوضع الحالي"},{"label":"وفّر 500 ريال إضافي","action":"كيف تحرر 500 ريال عملياً","months":${calcMonthsToGoal(d.netWorth,d.monthlySaving+500,d.rate,1000000)},"monthly_saving":${d.monthlySaving+500},"difficulty":"سهل جداً"},{"label":"دخل جانبي 1000 ريال","action":"فكرة دخل واقعية","months":${calcMonthsToGoal(d.netWorth,d.monthlySaving+1000,d.rate,1000000)},"monthly_saving":${d.monthlySaving+1000},"difficulty":"ممكن خلال شهر"},{"label":"دخل جانبي 2000 ريال","action":"مشروع صغير","months":${calcMonthsToGoal(d.netWorth,d.monthlySaving+2000,d.rate,1000000)},"monthly_saving":${d.monthlySaving+2000},"difficulty":"يحتاج جهد"}],"income_ideas":[{"title":"فكرة1","description":"وصف مشوق","potential":"X-Y ريال/شهر","difficulty":"سهل","how_to_start":"خطوة أولى اليوم"},{"title":"فكرة2","description":"...","potential":"...","difficulty":"...","how_to_start":"..."},{"title":"فكرة3","description":"...","potential":"...","difficulty":"...","how_to_start":"..."},{"title":"فكرة4","description":"...","potential":"...","difficulty":"...","how_to_start":"..."},{"title":"فكرة5","description":"...","potential":"...","difficulty":"...","how_to_start":"..."}],"monthly_plan":[{"week":"الأسبوع الأول","task":"مهمة واحدة محددة","why":"السبب بصدق"},{"week":"الأسبوع الثاني","task":"...","why":"..."},{"week":"الأسبوع الثالث","task":"...","why":"..."},{"week":"الأسبوع الرابع","task":"...","why":"..."}],"mindset_tips":["نصيحة نفسية قصيرة وقوية","نصيحة ثانية","نصيحة ثالثة","نصيحة رابعة"],"closing_message":"رسالة ختامية مؤثرة شخصية"}`
   }
 
   const buildLocalReport = (d: UserData): ReportData => {
@@ -167,7 +157,7 @@ export default function ReportPage() {
   if (!data) return null
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-xl mx-auto px-4 py-8">
 
         {/* Header */}

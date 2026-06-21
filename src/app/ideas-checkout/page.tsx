@@ -13,7 +13,7 @@ export default function IdeasCheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-md mx-auto px-4 py-10">
 
         <button onClick={() => router.back()} className="text-gray-400 text-sm mb-6 hover:text-white transition-colors">
@@ -71,9 +71,13 @@ export default function IdeasCheckoutPage() {
 
         {/* السعر والدفع */}
         <div className="text-center mb-5">
+          <div className="inline-block bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-4 py-1.5 rounded-full mb-3">
+            🎁 مجاني لفترة الإطلاق
+          </div>
           <div className="line-through text-gray-500 text-sm mb-1">السعر الأصلي: 99 ريال</div>
-          <div className="text-4xl font-extrabold text-gold mb-1">20 ريال</div>
-          <p className="text-xs text-gray-500 mb-5">عرض محدود · دفعة واحدة · بدون اشتراك</p>
+          <div className="text-2xl text-gray-500 line-through mb-1">20 ريال</div>
+          <div className="text-3xl font-extrabold text-gold mb-1">مجاناً</div>
+          <p className="text-xs text-gray-500 mb-5">احصل على الدليل الكامل الآن بدون أي رسوم</p>
 
           <button
             onClick={handlePay}
@@ -85,20 +89,20 @@ export default function IdeasCheckoutPage() {
                 <span className="animate-spin">⏳</span> جاري التحضير...
               </span>
             ) : (
-              '💳 اشتر الدليل الآن — 20 ريال'
+              '🚀 احصل على الدليل مجاناً'
             )}
           </button>
 
           <p className="mt-3 text-xs text-gray-500">
-            🔒 دفع آمن · وصول فوري · استرداد خلال 24 ساعة
+            لا حاجة لبطاقة دفع — وصول فوري بالكامل
           </p>
         </div>
 
         <div className="flex justify-center gap-6">
           {[
-            { icon: '🔒', text: 'دفع آمن' },
             { icon: '⚡', text: 'وصول فوري' },
-            { icon: '↩️', text: 'استرداد مضمون' },
+            { icon: '🔒', text: 'بياناتك محمية' },
+            { icon: '🎁', text: 'بدون مقابل' },
           ].map((t, i) => (
             <div key={i} className="text-center">
               <div className="text-xl">{t.icon}</div>

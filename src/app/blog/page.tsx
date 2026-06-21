@@ -63,7 +63,7 @@ const tagColors: Record<string, string> = {
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-2xl mx-auto px-4 py-10">
 
         {/* Nav */}
@@ -78,7 +78,7 @@ export default function BlogPage() {
         {/* Articles */}
         <div className="space-y-4 mb-10">
           {articles.map((article, i) => (
-            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-gold/30 transition-all cursor-pointer">
+            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-5">
               <div className="flex justify-between items-start mb-2">
                 <span className={`text-xs px-2 py-1 rounded-full font-bold ${tagColors[article.tag]}`}>
                   {article.tag}
@@ -87,7 +87,7 @@ export default function BlogPage() {
               </div>
               <h2 className="text-base font-bold mb-2">{article.title}</h2>
               <p className="text-sm text-gray-400">{article.desc}</p>
-              <p className="text-xs text-gold mt-3 font-bold">اقرأ المقال ←</p>
+              <p className="text-xs text-gray-600 mt-3 font-bold">قريباً 🔜</p>
             </div>
           ))}
         </div>

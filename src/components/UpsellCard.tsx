@@ -55,10 +55,14 @@ export default function UpsellCard({ scenarios, userData }: Props) {
 
       {/* السعر */}
       <div className="bg-gold/10 border border-gold/30 rounded-xl p-4 mb-4">
-        <div className="text-3xl font-extrabold text-gold mb-1">
-          9 <span className="text-xl">ريال فقط</span>
+        <div className="inline-block bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-3 py-1 rounded-full mb-2">
+          🎁 مجاني الآن
         </div>
-        <p className="text-xs text-gray-400">تبي تعرف كيف توصل للمليون الأول بسرعة؟ 💡</p>
+        <div className="flex items-center gap-2">
+          <span className="text-lg text-gray-500 line-through">9 ريال</span>
+          <span className="text-3xl font-extrabold text-gold">مجاناً</span>
+        </div>
+        <p className="text-xs text-gray-400 mt-1">تبي تعرف كيف توصل للمليون الأول بسرعة؟ 💡</p>
       </div>
 
       {/* ما يشمله التقرير */}
@@ -78,11 +82,11 @@ export default function UpsellCard({ scenarios, userData }: Props) {
         onClick={handleBuy}
         className="w-full py-4 bg-gold hover:bg-yellow-600 text-white font-bold text-lg rounded-xl transition-all active:scale-95 shadow-lg shadow-gold/20"
       >
-        اشتر التقرير الآن — 9 ريال 🚀
+        احصل على تقريرك مجاناً 🚀
       </button>
 
       <p className="mt-3 text-xs text-gray-500">
-        💳 دفع آمن · استرداد خلال 24 ساعة لو ما عجبك
+        لا حاجة لبطاقة دفع — وصول فوري
       </p>
 
       <div className="mt-5 pt-5 border-t border-white/10 text-center">

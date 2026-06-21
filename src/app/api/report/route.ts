@@ -1,5 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// فريق الأمن السيبراني: حماية بسيطة ضد الاستدعاء المتكرر السريع لنفس الـIP —
+// تخفف من استنزاف رصيد API حتى بعد إغلاق ثغرة الـprompt المفتوح. هذا حل
+// بمستوى "رادع أولي" وليس حماية كاملة (الذاكرة المحلية تُصفَّر مع كل نشر
+// جديد أو في بيئة serverless موزعة على عدة instances) — حل أقوى لاحقاً
+// يتطلب Redis أو خدمة rate-limiting خارجية مخصصة.
+const requestLog = new Map<string, number[]>()
+const RATE_LIMIT = 5
+const RATE_WINDOW_MS = 60_000
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = (requestLog.get(ip) || []).filter(t => now - t < RATE_WINDOW_MS)
+  if (timestamps.length >= RATE_LIMIT) {
+    requestLog.set(ip, timestamps)
+    return true
+  }
+  timestamps.push(now)
+  requestLog.set(ip, timestamps)
+  return false
+}
+
+function buildPrompt(salary: number, expenses: number, monthlySaving: number, totalMonths: number, netWorth: number, rate: number) {
+  const savingRate = salary > 0 ? Math.round((monthlySaving / salary) * 100) : 0
+  const years = Math.floor(totalMonths / 12)
+  const months = totalMonths % 12
+  const monthsLabel = months > 0 ? `${years} سنة و${months} شهر` : `${years} سنة`
+
+  const sc500 = calcMonths(netWorth, monthlySaving + 500, rate)
+  const sc1000 = calcMonths(netWorth, monthlySaving + 1000, rate)
+  const sc2000 = calcMonths(netWorth, monthlySaving + 2000, rate)
+
+  return `أنت مستشار مالي سعودي صادق ومحفّز. اكتب تقريراً مالياً شخصياً بأسلوب "أخ ناصح" وليس "مستشار رسمي".
+
+البيانات: راتب ${salary} ريال | مصروف ${expenses} ريال | ادخار ${monthlySaving} ريال/شهر (${savingRate}%) | ثروة حالية ${netWorth} ريال | المدة للمليون: ${monthsLabel}
+
+أجب بـ JSON فقط بدون backticks:
+{"motivational_opener":"جملة واحدة تحفيزية شخصية تخاطبه مباشرة بناءً على أرقامه الحقيقية","reality_check":"فقرة قصيرة صادقة عن وضعه — بأسلوب شخص يحبك وخبره لك","strengths":[{"title":"نقطة قوة حقيقية من أرقامه","description":"شرح عملي كيف يستثمرها"},{"title":"نقطة قوة ثانية","description":"شرح"},{"title":"نقطة قوة ثالثة","description":"شرح"}],"weaknesses":[{"title":"نقطة ضعف بلطف","fix":"حل عملي خطوة واحدة"},{"title":"نقطة ضعف ثانية","fix":"حل"}],"scenarios":[{"label":"وضعك الحالي","action":"استمر على نفس الوتيرة","months":${totalMonths},"monthly_saving":${monthlySaving},"difficulty":"الوضع الحالي"},{"label":"وفّر 500 ريال إضافي","action":"كيف تحرر 500 ريال عملياً","months":${sc500},"monthly_saving":${monthlySaving + 500},"difficulty":"سهل جداً"},{"label":"دخل جانبي 1000 ريال","action":"فكرة دخل واقعية","months":${sc1000},"monthly_saving":${monthlySaving + 1000},"difficulty":"ممكن خلال شهر"},{"label":"دخل جانبي 2000 ريال","action":"مشروع صغير","months":${sc2000},"monthly_saving":${monthlySaving + 2000},"difficulty":"يحتاج جهد"}],"income_ideas":[{"title":"فكرة1","description":"وصف مشوق","potential":"X-Y ريال/شهر","difficulty":"سهل","how_to_start":"خطوة أولى اليوم"},{"title":"فكرة2","description":"...","potential":"...","difficulty":"...","how_to_start":"..."},{"title":"فكرة3","description":"...","potential":"...","difficulty":"...","how_to_start":"..."},{"title":"فكرة4","description":"...","potential":"...","difficulty":"...","how_to_start":"..."},{"title":"فكرة5","description":"...","potential":"...","difficulty":"...","how_to_start":"..."}],"monthly_plan":[{"week":"الأسبوع الأول","task":"مهمة واحدة محددة","why":"السبب بصدق"},{"week":"الأسبوع الثاني","task":"...","why":"..."},{"week":"الأسبوع الثالث","task":"...","why":"..."},{"week":"الأسبوع الرابع","task":"...","why":"..."}],"mindset_tips":["نصيحة نفسية قصيرة وقوية","نصيحة ثانية","نصيحة ثالثة","نصيحة رابعة"],"closing_message":"رسالة ختامية مؤثرة شخصية"}`
+}
+
+// نسخة مبسطة من حساب الأشهر (تطابق src/lib/calculator.ts) — مكررة هنا عمداً
+// لأن API routes لا يمكنها استيراد كود client-side بسهولة في كل بيئات النشر
+function calcMonths(startWealth: number, monthlySaving: number, annualRate: number, goal = 1000000): number {
+  if (startWealth >= goal) return 0
+  if (monthlySaving <= 0 && annualRate <= 0) return 99999
+  let wealth = startWealth
+  const monthlyRate = annualRate / 100 / 12
+  let months = 0
+  while (wealth < goal && months < 12000) {
+    wealth = wealth * (1 + monthlyRate) + monthlySaving
+    months++
+  }
+  return months >= 12000 ? 99999 : months
+}
+
 function generateStaticReport(salary: number, expenses: number, monthlySaving: number, totalMonths: number, netWorth: number) {
   const years = Math.floor(totalMonths / 12)
   const months = totalMonths % 12
@@ -50,14 +104,40 @@ function generateStaticReport(salary: number, expenses: number, monthlySaving: n
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ error: 'طلبات كثيرة جداً — حاول بعد دقيقة' }, { status: 429 })
+    }
+
     const body = await req.json()
-    const { salary = 0, expenses = 0, monthlySaving = 0, totalMonths = 120, netWorth = 0 } = body
+
+    // فريق الأمن السيبراني: تحقق صارم من المدخلات قبل أي استخدام —
+    // يمنع قيماً غير منطقية (سالبة، نصية، أو ضخمة بشكل غير واقعي) من
+    // الوصول لمنطق الحساب أو حتى لـ Claude API
+    const salary = Number(body.salary)
+    const expenses = Number(body.expenses)
+    const monthlySaving = Number(body.monthlySaving)
+    const totalMonths = Number(body.totalMonths)
+    const netWorth = Number(body.netWorth)
+    const rate = Number(body.rate) || 0
+
+    const isValid = (n: number) => Number.isFinite(n) && n >= 0 && n < 100_000_000
+    if (![salary, expenses, netWorth].every(isValid) || !Number.isFinite(monthlySaving) || !isValid(totalMonths)) {
+      return NextResponse.json({ error: 'Invalid input data' }, { status: 400 })
+    }
+
+    // فريق الأمن السيبراني — إصلاح حرج: الـAPI route كان سابقاً يستقبل prompt
+    // جاهزاً من العميل ويرسله مباشرة لـ Claude API دون أي تعديل. هذا يعني أي
+    // شخص يستدعي هذا الـendpoint مباشرة (عبر curl أو Developer Console) كان
+    // يقدر يرسل أي prompt يختاره هو، مستخدماً رصيد Anthropic API الخاص بالمالك
+    // كـ"بروكسي مفتوح" بدون أي قيد. الآن: الـprompt يُبنى بالكامل في السيرفر
+    // فقط من أرقام محقَّقة، ولا قيمة من العميل تدخل الـprompt كنص حر أبداً.
+    const prompt = buildPrompt(salary, expenses, monthlySaving, totalMonths, netWorth, rate)
 
     // جرب API أولاً لو في مفتاح
     const apiKey = process.env.ANTHROPIC_API_KEY
     if (apiKey) {
       try {
-        const { prompt } = body
         const res = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: {

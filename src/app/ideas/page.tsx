@@ -91,7 +91,7 @@ export default function IdeasPage() {
   })
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-xl mx-auto px-4 py-8">
 
         {/* Header */}

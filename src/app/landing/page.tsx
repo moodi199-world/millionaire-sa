@@ -52,7 +52,7 @@ export default function LandingPage() {
   const router = useRouter()
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
 
       {/* Nav */}
       <nav className="border-b border-white/10 px-4 py-4">

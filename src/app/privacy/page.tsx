@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-2xl mx-auto px-4 py-10">
 
         <Link href="/" className="text-gold text-sm hover:underline mb-8 block">

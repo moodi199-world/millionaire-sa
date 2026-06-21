@@ -108,9 +108,26 @@ export default function Home() {
   }
 
   const canGoNext = () => {
-    if (step === 1) return salary !== '' && expenses !== '' && Number(salary) > 0
-    if (step === 2) return hasSavings !== null && (hasSavings === false || savings !== '')
-    if (step === 3) return hasInvestments !== null && (hasInvestments === false || investments !== '')
+    // فريق ضمان الجودة: تحقق فعلي من القيم وليس فقط HTML min/max (الذي
+    // لا يمنع كتابة قيم سالبة يدوياً عبر لوحة المفاتيح) — اكتُشف أن مصروفاً
+    // سالباً كان يكسر معادلة الادخار الشهري (salary - expenses) بشكل كامل
+    if (step === 1) {
+      const s = Number(salary)
+      const e = Number(expenses)
+      return salary !== '' && expenses !== '' && s > 0 && s <= 10_000_000 && e >= 0 && e <= 10_000_000
+    }
+    if (step === 2) {
+      if (hasSavings === null) return false
+      if (hasSavings === false) return true
+      const sv = Number(savings)
+      return savings !== '' && sv >= 0 && sv <= 100_000_000
+    }
+    if (step === 3) {
+      if (hasInvestments === null) return false
+      if (hasInvestments === false) return true
+      const inv = Number(investments)
+      return investments !== '' && inv >= 0 && inv <= 100_000_000
+    }
     if (step === 4) return true
     return false
   }
@@ -129,7 +146,7 @@ export default function Home() {
   const progressPercent = (step / 4) * 100
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-xl mx-auto px-4 py-8">
 
         {/* Social Proof */}
@@ -189,6 +206,8 @@ export default function Home() {
                   <div className="relative">
                     <input
                       type="number"
+                      min="0"
+                      max="10000000"
                       value={salary}
                       onChange={e => setSalary(e.target.value)}
                       placeholder=""
@@ -203,6 +222,8 @@ export default function Home() {
                   <div className="relative">
                     <input
                       type="number"
+                      min="0"
+                      max="10000000"
                       value={expenses}
                       onChange={e => setExpenses(e.target.value)}
                       placeholder=""
@@ -248,6 +269,8 @@ export default function Home() {
                   <div className="relative">
                     <input
                       type="number"
+                      min="0"
+                      max="100000000"
                       value={savings}
                       onChange={e => setSavings(e.target.value)}
                       placeholder="أكتب قيمة مدخراتك"
@@ -286,6 +309,8 @@ export default function Home() {
                     <div className="relative">
                       <input
                         type="number"
+                        min="0"
+                        max="100000000"
                         value={investments}
                         onChange={e => setInvestments(e.target.value)}
                         placeholder="أكتب قيمة استثماراتك"

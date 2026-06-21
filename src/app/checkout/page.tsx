@@ -40,7 +40,7 @@ export default function CheckoutPage() {
   )
 
   return (
-    <main className="min-h-screen bg-[#0A0F1C] text-white font-tajawal" dir="rtl">
+    <main className="min-h-screen bg-dark text-white font-tajawal" dir="rtl">
       <div className="max-w-md mx-auto px-4 py-10">
 
         {/* Header */}
@@ -101,8 +101,12 @@ export default function CheckoutPage() {
 
         {/* السعر والدفع */}
         <div className="text-center mb-4">
-          <div className="text-4xl font-extrabold text-gold mb-1">9 ريال</div>
-          <p className="text-xs text-gray-500 mb-5">دفعة واحدة · بدون اشتراك</p>
+          <div className="inline-block bg-green-500/20 border border-green-500/40 text-green-400 text-xs font-bold px-4 py-1.5 rounded-full mb-3">
+            🎁 مجاني لفترة الإطلاق
+          </div>
+          <div className="text-2xl text-gray-500 line-through mb-1">9 ريال</div>
+          <div className="text-4xl font-extrabold text-gold mb-1">مجاناً</div>
+          <p className="text-xs text-gray-500 mb-5">احصل على تقريرك الكامل الآن بدون أي رسوم</p>
 
           {/* الإيميل */}
           <div className="mb-4">
@@ -128,21 +132,21 @@ export default function CheckoutPage() {
                 <span className="animate-spin">⏳</span> جاري التحضير...
               </span>
             ) : (
-              '💳 ادفع وشوف التقرير الآن'
+              '🚀 احصل على تقريرك مجاناً'
             )}
           </button>
 
           <p className="mt-3 text-xs text-gray-500">
-            🔒 دفع آمن · استرداد خلال 24 ساعة لو ما عجبك
+            لا حاجة لبطاقة دفع — التقرير مجاني بالكامل حالياً
           </p>
         </div>
 
         {/* Trust signals */}
         <div className="flex justify-center gap-6 mt-6">
           {[
-            { icon: '🔒', text: 'دفع آمن' },
             { icon: '⚡', text: 'فوري' },
-            { icon: '↩️', text: 'استرداد مضمون' },
+            { icon: '🔒', text: 'بياناتك محمية' },
+            { icon: '🎁', text: 'بدون مقابل' },
           ].map((t, i) => (
             <div key={i} className="text-center">
               <div className="text-xl">{t.icon}</div>
